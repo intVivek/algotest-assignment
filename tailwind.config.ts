@@ -9,8 +9,13 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        background: "var(--background)",
-        foreground: "var(--foreground)",
+        lightGray: "#fafafa",
+        gray: "#d1d5db",
+        yellow: '#fffbe5',
+      },
+
+      boxShadow: {
+        "outline-gray-300": "0 0 0px 1px rgba(209, 213, 219, 1)",
       },
     },
   },
