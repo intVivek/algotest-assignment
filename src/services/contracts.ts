@@ -1,11 +1,11 @@
-export interface OptionData {
+export interface ContractsData {
   exchange: string;
   expiry: string;
   instrument_type: string;
   is_tradable: boolean;
   lot_size: number;
   max_qty_in_order: number;
-  option_type: string; // CE or PE
+  option_type: 'CE' | 'PE';
   strike: number;
   symbol: string;
   tick_size: number;
@@ -16,7 +16,7 @@ export interface OptionData {
 export interface ContractsResponse {
   [bank: string]: {
     OPT: {
-      [expiryDate: string]: OptionData[];
+      [expiryDate: string]: ContractsData[];
     };
   };
 }
