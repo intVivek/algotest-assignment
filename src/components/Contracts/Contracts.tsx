@@ -1,16 +1,35 @@
-"use client";
-
 import ContractTable, {
   OptionData,
 } from "@/components/ContractTable/ContractTable";
 import ExpiryFilter from "@/components/ExpiryFilter/ExpiryFilter";
-import { useState } from "react";
+import useContracts from "@/hooks/useContracts";
+import { useEffect, useMemo, useState } from "react";
+
+const bank = "BANKNIFTY";
 
 export default function Contracts() {
-  const [expiry, setExpiry] = useState(expiryDates[0]);
+  const { data, error, isLoading } = useContracts();
+
+  const [selectedExpiry, setSelectedExpiry] = useState("");
+
+  const expiryDates = useMemo(() => {
+    if (!data || !bank) return [];
+    return Object.keys(data[bank].OPT);
+  }, [data]);
+
+  useEffect(() => {
+    if (expiryDates) setSelectedExpiry(expiryDates[0]);
+  }, [expiryDates]);
+
+  const contractsData = useMemo(() => {
+    if (!data || !selectedExpiry || !bank) return [];
+    return data?.[bank]?.OPT?.[selectedExpiry];
+  }, [data, selectedExpiry, bank]);
+
+  console.log(contractsData);
 
   const onClickExpiry = (expiry: string) => {
-    setExpiry(expiry);
+    setSelectedExpiry(expiry);
   };
 
   return (
@@ -18,9 +37,9 @@ export default function Contracts() {
       <ExpiryFilter
         expiryDates={expiryDates}
         onClick={onClickExpiry}
-        selectedExpiry={expiry}
+        selectedExpiry={selectedExpiry}
       />
-      <ContractTable data={sampleData} />
+      <ContractTable data={contractsData} />
     </div>
   );
 }
@@ -80,3 +99,29 @@ const expiryDates = [
   "2025-11-30",
   "2025-12-25",
 ];
+
+{
+  exchange: "NSE";
+  expiry: "2025-06-25";
+  instrument_type: "OPT";
+  is_tradable: true;
+  lot_size: 15;
+  max_qty_in_order: 900;
+  option_type: "CE";
+  strike: 57000;
+  symbol: "BANKNIFTY25JUN57000CE";
+  tick_size: 5;
+  token: "NSE_54793";
+  underlying: "BANKNIFTY";
+}
+
+{
+  ba_price: 1575.6;
+  ba_qty: 10;
+  bb_price: 1544.4;
+  bb_qty: 10;
+  ltp: 1560;
+  timestamp: "2024-10-18T20:13:52.000184";
+  token: "NSE_54793";
+  vol_in_day: 100;
+}
