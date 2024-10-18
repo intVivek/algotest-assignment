@@ -14,7 +14,7 @@ interface ContractTableProps {
 const Cell: React.FC<ComponentProps<"div">> = ({ className, ...props }) => (
   <div
     className={twMerge(
-      "flex-1 border-b grid place-items-center border-gray border-r",
+      "flex-1 border-b text-grayInk grid text-sm place-items-center border-gray border-r",
       className && className
     )}
     {...props}
@@ -23,7 +23,7 @@ const Cell: React.FC<ComponentProps<"div">> = ({ className, ...props }) => (
 
 const ContractTable: React.FC<ContractTableProps> = ({ data }) => {
   return (
-    <div className="overflow-overlay overflow-x-hidden h-[70vh] w-[700px] rounded-md  border border-gray">
+    <div className="overflow-overlay overflow-x-hidden h-[70vh] w-full">
       <div className="bg-lightGray sticky top-0 z-10 flex h-[34px] border-b border-gray">
         <Cell>Call Price</Cell>
         <Cell>Strike Price</Cell>

@@ -1,11 +1,43 @@
+"use client";
+
 import ContractTable, {
   OptionData,
 } from "@/components/ContractTable/ContractTable";
+import ExpiryFilter from "@/components/ExpiryFilter/ExpiryFilter";
+import { useState } from "react";
+
+const expiryDates = [
+  "2024-10-20",
+  "2024-11-15",
+  "2024-12-30",
+  "2025-01-25",
+  "2025-02-28",
+  "2025-03-15",
+  "2025-04-10",
+  "2025-05-05",
+  "2025-06-01",
+  "2025-07-20",
+  "2025-08-15",
+  "2025-09-10",
+  "2025-10-01",
+  "2025-11-30",
+  "2025-12-25",
+];
 
 export default function Home() {
+
+  const [expiry, setExpiry] = useState(expiryDates[0])
+
+  const onClickExpiry = (expiry: string) => {
+    setExpiry(expiry)
+  }
+
   return (
     <div className="app grid place-items-center">
-      <ContractTable data={sampleData} />
+      <div className="w-[95vw] max-w-[700px] rounded-md  border border-gray">
+        <ExpiryFilter expiryDates={expiryDates} onClick={onClickExpiry} selectedExpiry={expiry}/>
+        <ContractTable data={sampleData} />
+      </div>
     </div>
   );
 }
