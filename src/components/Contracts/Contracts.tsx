@@ -11,7 +11,7 @@ export default function Contracts() {
 
   const { data, isLoading } = useCombinedOptions(bank);
 
-  const { liveData } = useSocketLTP(data, selectedExpiry, bank);
+  const { liveData, isLoading: isLiveDataLoading } = useSocketLTP(data, selectedExpiry, bank);
 
   const expiryDates = useMemo(() => {
     if (!data) return [];
@@ -31,8 +31,7 @@ export default function Contracts() {
         loading={isLoading}
       />
       <div className="flex">
-        <ContractTable loading={isLoading} data={data[selectedExpiry]} />
-        <ContractTable loading={isLoading} data={liveData} />
+        <ContractTable loading={isLoading || isLiveDataLoading} data={liveData} />
       </div>
     </div>
   );

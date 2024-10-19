@@ -21,6 +21,7 @@ type Data = { [expiry: string]: CombinedOptions[] };
 const useSocketLTP = (data: Data, expiry: string, bank: string, deps: unknown[] = []) => {
     const socketRef = useRef<WebSocket | null>(null);
     const [liveData, setLiveData] = useState<CombinedOptions[]>([]);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
 
     const handleIncomingData = (ltpData: LTPData[]) => {
         if (!data[expiry] || !ltpData) return;
@@ -36,6 +37,7 @@ const useSocketLTP = (data: Data, expiry: string, bank: string, deps: unknown[] 
             return option;
         });
         setLiveData(updatedData);
+        setIsLoading(false); // Stop loading as soon as data is set
     };
 
     useEffect(() => {
@@ -47,6 +49,7 @@ const useSocketLTP = (data: Data, expiry: string, bank: string, deps: unknown[] 
 
             ws.onopen = () => {
                 console.log("WebSocket connection opened");
+                setIsLoading(true);
                 const subscriptionMessage = {
                     msg: {
                         type: "subscribe",
@@ -70,10 +73,12 @@ const useSocketLTP = (data: Data, expiry: string, bank: string, deps: unknown[] 
 
             ws.onerror = (error) => {
                 console.error("WebSocket error:", error);
+                setIsLoading(false);
             };
 
             ws.onclose = () => {
                 console.log("WebSocket connection closed");
+                setIsLoading(false);
             };
         };
 
@@ -91,7 +96,7 @@ const useSocketLTP = (data: Data, expiry: string, bank: string, deps: unknown[] 
         };
     }, [data, expiry, bank, ...deps]);
 
-    return { liveData };
+    return { liveData, isLoading };
 };
 
 export default useSocketLTP;
