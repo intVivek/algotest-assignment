@@ -2,13 +2,16 @@ import { useMemo, useState } from "react";
 import ContractTable from "../ContractTable/ContractTable";
 import ExpiryFilter from "../ExpiryFilter/ExpiryFilter";
 import useCombinedOptions from "@/hooks/useCombinedOptions";
+import useSocketLTP from "@/hooks/useSocketLTP";
 
 const bank = "BANKNIFTY";
 
 export default function Contracts() {
+  const [selectedExpiry, setSelectedExpiry] = useState("");
+
   const { data, isLoading } = useCombinedOptions(bank);
 
-  const [selectedExpiry, setSelectedExpiry] = useState("");
+  const { liveData } = useSocketLTP(data, selectedExpiry, bank);
 
   const expiryDates = useMemo(() => {
     if (!data) return [];
@@ -27,7 +30,10 @@ export default function Contracts() {
         selectedExpiry={selectedExpiry}
         loading={isLoading}
       />
-      <ContractTable loading={isLoading} data={data[selectedExpiry]} />
+      <div className="flex">
+        <ContractTable loading={isLoading} data={data[selectedExpiry]} />
+        <ContractTable loading={isLoading} data={liveData} />
+      </div>
     </div>
   );
 }

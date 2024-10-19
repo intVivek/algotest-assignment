@@ -8,6 +8,7 @@ export type CombinedOptions = {
   strike: number;
   put: number | null;
   call: number | null;
+  token: string;
 };
 
 const useCombinedOptions = (bank: string, deps: unknown[]=[]) => {
@@ -49,6 +50,7 @@ const useCombinedOptions = (bank: string, deps: unknown[]=[]) => {
             strike,
             call: callClose,
             put: putClose,
+            token: contract.token,
           };
         }
       });

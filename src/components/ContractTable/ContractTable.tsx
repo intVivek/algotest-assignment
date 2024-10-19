@@ -1,15 +1,10 @@
+import { CombinedOptions } from "@/hooks/useCombinedOptions";
 import React, { ComponentProps } from "react";
 import { twMerge } from "tailwind-merge";
 
-export interface OptionData {
-  call: number | null;
-  strike: number;
-  put: number | null;
-}
-
 interface ContractTableProps {
   loading: boolean;
-  data: OptionData[];
+  data: CombinedOptions[];
 }
 
 const Cell: React.FC<ComponentProps<"div">> = ({ className, ...props }) => (
@@ -23,7 +18,7 @@ const Cell: React.FC<ComponentProps<"div">> = ({ className, ...props }) => (
 );
 
 const ContractTable: React.FC<ContractTableProps> = ({ loading, data }) => {
-  console.log(data);
+
   return (
     <div className="overflow-overlay bg-white overflow-x-hidden h-[70vh] w-full">
       <div className="bg-lightGray sticky top-0 z-10 flex h-[34px] border-b border-gray">
