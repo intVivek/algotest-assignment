@@ -2,9 +2,9 @@ import React, { ComponentProps } from "react";
 import { twMerge } from "tailwind-merge";
 
 export interface OptionData {
-  callPrice: number | null;
+  call: number | null;
   strike: number;
-  putPrice: number | null;
+  put: number | null;
 }
 
 interface ContractTableProps {
@@ -22,6 +22,7 @@ const Cell: React.FC<ComponentProps<"div">> = ({ className, ...props }) => (
 );
 
 const ContractTable: React.FC<ContractTableProps> = ({ data }) => {
+  console.log(data)
   return (
     <div className="overflow-overlay overflow-x-hidden h-[70vh] w-full">
       <div className="bg-lightGray sticky top-0 z-10 flex h-[34px] border-b border-gray">
@@ -30,11 +31,11 @@ const ContractTable: React.FC<ContractTableProps> = ({ data }) => {
         <Cell>Put Price</Cell>
       </div>
       <div>
-        {data.map((row, index) => (
+        {data?.map((row, index) => (
           <div key={index} className="flex h-[40px] border-b border-gray">
-            <Cell className="bg-yellow">{row.callPrice}</Cell>
+            <Cell className="bg-yellow">{row.call}</Cell>
             <Cell>{row.strike}</Cell>
-            <Cell>{row.putPrice}</Cell>
+            <Cell>{row.put}</Cell>
           </div>
         ))}
       </div>
