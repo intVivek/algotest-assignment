@@ -9,9 +9,13 @@ const bank = "BANKNIFTY";
 export default function Contracts() {
   const [selectedExpiry, setSelectedExpiry] = useState("");
 
-  const { data, isLoading } = useCombinedOptions(bank);
+  const { data, implied_futures, isLoading } = useCombinedOptions(bank);
 
-  const { liveData, isLoading: isLiveDataLoading } = useSocketLTP(data, selectedExpiry, bank);
+  const { liveData, isLoading: isLiveDataLoading } = useSocketLTP(
+    data,
+    selectedExpiry,
+    bank
+  );
 
   const expiryDates = useMemo(() => {
     if (!data) return [];
@@ -31,7 +35,12 @@ export default function Contracts() {
         loading={isLoading}
       />
       <div className="flex">
-        <ContractTable loading={isLoading || isLiveDataLoading} data={liveData} />
+        <ContractTable
+          selectedExpiry={selectedExpiry}
+          loading={isLoading || isLiveDataLoading}
+          data={liveData}
+          synthetic_fut={implied_futures?.[selectedExpiry]}
+        />
       </div>
     </div>
   );

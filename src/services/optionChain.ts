@@ -1,9 +1,12 @@
 import axios from "axios";
 
+export type ImpliedFutures = {[expiry: string]: number}
+
 export type OptionChainResponse = {
   candle: string;
   underlying: string;
   options: Options;
+  implied_futures: ImpliedFutures;
 }
 
 export interface Options {

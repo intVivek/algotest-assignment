@@ -69,6 +69,7 @@ const useCombinedOptions = (bank: string, deps: unknown[]=[]) => {
 
   return {
     data: combinedOptions,
+    implied_futures: optionChainData?.implied_futures,
     isLoading: isContractsLoading || isOptionLoading,
   };
 };

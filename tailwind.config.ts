@@ -15,7 +15,8 @@ const config: Config = {
         grayInk: '#737373',
         yellow: '#fffbe5',
         lightBlue: '#3c81af1a',
-        blue: '#0b619b'
+        blue: '#0b619b',
+        blueInk: '#0085ff',
       },
 
       boxShadow: {
