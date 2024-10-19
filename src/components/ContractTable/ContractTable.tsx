@@ -1,4 +1,5 @@
 import { CombinedOptions } from "@/hooks/useCombinedOptions";
+import roundToTwoDecimals from "@/utils/roundToTwoDecimals";
 import React, { ComponentProps } from "react";
 import { twMerge } from "tailwind-merge";
 
@@ -29,9 +30,9 @@ const ContractTable: React.FC<ContractTableProps> = ({ loading, data }) => {
         <div className="bg-white">
           {data?.map((row, index) => (
             <div key={index} className="flex h-[40px] border-b border-gray">
-              <Cell className="bg-yellow">{row.call}</Cell>
+              <Cell className="bg-yellow">{roundToTwoDecimals(row.call)}</Cell>
               <Cell>{row.strike}</Cell>
-              <Cell>{row.put}</Cell>
+              <Cell>{roundToTwoDecimals(row.put)}</Cell>
             </div>
           ))}
         </div>
