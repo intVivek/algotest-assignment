@@ -3,7 +3,7 @@ import { IoChevronBack, IoChevronForward } from "react-icons/io5";
 import { twMerge } from "tailwind-merge";
 interface ExpiryFilterProps {
   selectedExpiry: string;
-  onClick?: Function;
+  onClick?: (date: string)=>void;
   expiryDates: string[];
   loading: boolean;
 }

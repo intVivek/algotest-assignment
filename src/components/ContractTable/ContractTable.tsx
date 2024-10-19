@@ -1,5 +1,4 @@
 import { CombinedOptions } from "@/hooks/useCombinedOptions";
-import { ImpliedFutures } from "@/services/optionChain";
 import roundToTwoDecimals from "@/utils/roundToTwoDecimals";
 import React, { ComponentProps, useEffect, useRef } from "react";
 import { twMerge } from "tailwind-merge";
