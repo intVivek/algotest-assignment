@@ -6,8 +6,7 @@ import useCombinedOptions from "@/hooks/useCombinedOptions";
 const bank = "BANKNIFTY";
 
 export default function Contracts() {
-
-  const { data } = useCombinedOptions(bank);
+  const { data, isLoading } = useCombinedOptions(bank);
 
   const [selectedExpiry, setSelectedExpiry] = useState("");
 
@@ -16,18 +15,19 @@ export default function Contracts() {
     const expries = Object.keys(data).sort((a, b) => {
       return new Date(a).getTime() - new Date(b).getTime();
     });
-    setSelectedExpiry(expries[0])
-    return expries
+    setSelectedExpiry(expries[0]);
+    return expries;
   }, [data]);
 
   return (
-    <div className="w-[95vw] max-w-[700px] rounded-md  border border-gray">
+    <div className="w-[95vw] max-w-[700px] rounded-md bg-lightGray border border-gray">
       <ExpiryFilter
         expiryDates={expiryDates}
-        onClick={(expiry:string)=>setSelectedExpiry(expiry)}
+        onClick={(expiry: string) => setSelectedExpiry(expiry)}
         selectedExpiry={selectedExpiry}
+        loading={isLoading}
       />
-      <ContractTable data={data[selectedExpiry]} />
+      <ContractTable loading={isLoading} data={data[selectedExpiry]} />
     </div>
   );
 }

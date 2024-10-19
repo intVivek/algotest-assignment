@@ -11,6 +11,7 @@ const config: Config = {
       colors: {
         lightGray: "#fafafa",
         gray: "#d1d5db",
+        graySkeleton: "#eaeaea",
         grayInk: '#737373',
         yellow: '#fffbe5',
         lightBlue: '#3c81af1a',
