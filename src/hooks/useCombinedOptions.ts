@@ -12,6 +12,7 @@ export type CombinedOptions = {
 };
 
 const useCombinedOptions = (bank: string, deps: unknown[] = []) => {
+  
   const { data: contractsData, isFetching: isContractsLoading } =
     useContracts();
   const { data: optionChainData, isFetching: isOptionLoading } =
