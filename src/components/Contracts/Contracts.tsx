@@ -37,7 +37,7 @@ export default function Contracts() {
   }, [data]);
 
   return (
-    <>
+    <div className="flex">
     <div className="w-[95vw] max-w-[700px] rounded-md bg-lightGray border border-gray">
       <ExpiryFilter
         expiryDates={expiryDates}
@@ -49,16 +49,16 @@ export default function Contracts() {
         <ContractTable
           selectedExpiry={selectedExpiry}
           loading={isLoading || isLiveDataLoading}
-          data={liveData}
+          data={liveData || []}
           synthetic_fut={implied_futures?.[selectedExpiry]}
           setPositions={setPositions}
           positions={positions}
         />
       </div>
     </div>
-    {Object.values(positions).map((position, i)=>{
+<div className="flex flex-col ml-4">    {Object.values(positions).map((position, i)=>{
       return <div key={i}>{JSON.stringify(position)}</div>}
-      )}
-    </>
+      )}</div>
+    </div>
   );
 }

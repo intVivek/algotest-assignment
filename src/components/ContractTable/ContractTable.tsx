@@ -53,17 +53,17 @@ const ContractTable: React.FC<ContractTableProps> = ({
     orderType: string,
     instrumentType: string,
     token: string,
-    i: number,
+    row: Partial<StrikeData>
   ) => {
     setPositions((p: { [token: string]: PositionsType }) => {
       const newPositions = { ...p };
     
       if (!newPositions[token]) {
-        newPositions[token] = { orderType, instrumentType, token, row: data[i] };
+        newPositions[token] = { orderType, instrumentType, token, ...row};
       } else if (newPositions[token].orderType === orderType) {
         delete newPositions[token];
       } else {
-        newPositions[token] = { orderType, instrumentType, token, row: data[i] };
+        newPositions[token] = { orderType, instrumentType, token, ...row};
       }
       return newPositions;
     });
@@ -126,7 +126,7 @@ const ContractTable: React.FC<ContractTableProps> = ({
                           "buy",
                           "call",
                           row.call?.token || "",
-                          index,
+                          {exchange: row.exchange},
                         )
                       }
                     >
@@ -143,7 +143,7 @@ const ContractTable: React.FC<ContractTableProps> = ({
                           "sell",
                           "call",
                           row.call?.token || "",
-                          index,
+                          {exchange: row.exchange},
                         )
                       }
                     >
@@ -162,7 +162,7 @@ const ContractTable: React.FC<ContractTableProps> = ({
                           "buy",
                           "put",
                           row.put?.token || "",
-                          index,
+                          {exchange: row.exchange},
                         )
                       }
                     >
@@ -178,7 +178,7 @@ const ContractTable: React.FC<ContractTableProps> = ({
                           "sell",
                           "put",
                           row.put?.token || "",
-                          index,
+                          {exchange: row.exchange},
                         )
                       }
                     >

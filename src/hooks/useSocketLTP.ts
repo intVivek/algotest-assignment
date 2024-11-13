@@ -25,7 +25,7 @@ const useSocketLTP = (
   deps: unknown[] = []
 ) => {
   const socketRef = useRef<WebSocket | null>(null);
-  const [liveData, setLiveData] = useState<StrikeData[]>([]);
+  const [liveData, setLiveData] = useState<StrikeData[]>();
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const handleIncomingData = (ltpData: LTPData[]) => {
@@ -98,6 +98,7 @@ const useSocketLTP = (
       ws.onerror = (error) => {
         console.error("WebSocket error:", error);
         setIsLoading(false);
+        setLiveData(data[expiry])
       };
 
       ws.onclose = () => {
