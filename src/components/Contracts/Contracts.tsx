@@ -15,11 +15,11 @@ export type PositionsType = {
 
 export default function Contracts() {
   const [selectedExpiry, setSelectedExpiry] = useState("");
-  const [positions, setPositions] = useState<{[token: string]: PositionsType}>({});
+  const [positions, setPositions] = useState<{
+    [token: string]: PositionsType;
+  }>({});
 
-  const { data, implied_futures, isLoading } = useCombinedOptions(
-    bank,
-  );
+  const { data, implied_futures, isLoading } = useCombinedOptions(bank);
 
   const { liveData, isLoading: isLiveDataLoading } = useSocketLTP(
     data,
@@ -37,28 +37,34 @@ export default function Contracts() {
   }, [data]);
 
   return (
-    <div className="flex">
-    <div className="w-[95vw] max-w-[700px] rounded-md bg-lightGray border border-gray">
-      <ExpiryFilter
-        expiryDates={expiryDates}
-        onClick={(expiry: string) => setSelectedExpiry(expiry)}
-        selectedExpiry={selectedExpiry}
-        loading={isLoading}
-      />
-      <div className="flex">
-        <ContractTable
+    <div className="flex p-4">
+      <div className="w-[95vw] max-w-[700px] rounded-md bg-lightGray border border-gray">
+        <ExpiryFilter
+          expiryDates={expiryDates}
+          onClick={(expiry: string) => setSelectedExpiry(expiry)}
           selectedExpiry={selectedExpiry}
-          loading={isLoading || isLiveDataLoading}
-          data={liveData || []}
-          synthetic_fut={implied_futures?.[selectedExpiry]}
-          setPositions={setPositions}
-          positions={positions}
+          loading={isLoading}
         />
+        <div className="flex">
+          <ContractTable
+            selectedExpiry={selectedExpiry}
+            loading={isLoading || isLiveDataLoading}
+            data={liveData || []}
+            synthetic_fut={implied_futures?.[selectedExpiry]}
+            setPositions={setPositions}
+            positions={positions}
+          />
+        </div>
       </div>
-    </div>
-<div className="flex flex-col ml-4">    {Object.values(positions).map((position, i)=>{
-      return <div key={i}>{JSON.stringify(position)}</div>}
-      )}</div>
+      <div className="flex flex-col ml-4 gap-4">
+        {Object.values(positions).map((position, i) => {
+          return (
+            <div key={i} className="border border-gray p-2">
+              {JSON.stringify(position, undefined, 2)}
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }

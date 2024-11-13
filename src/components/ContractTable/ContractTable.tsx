@@ -59,11 +59,11 @@ const ContractTable: React.FC<ContractTableProps> = ({
       const newPositions = { ...p };
     
       if (!newPositions[token]) {
-        newPositions[token] = { orderType, instrumentType, token, ...row};
+        newPositions[token] = { orderType, instrumentType, ...row};
       } else if (newPositions[token].orderType === orderType) {
         delete newPositions[token];
       } else {
-        newPositions[token] = { orderType, instrumentType, token, ...row};
+        newPositions[token] = { orderType, instrumentType, ...row};
       }
       return newPositions;
     });
@@ -94,10 +94,10 @@ const ContractTable: React.FC<ContractTableProps> = ({
               const callToken = row?.call?.token||'';
               const putToken = row?.put?.token||'';
 
-              const isCallBuy = positions?.[callToken]?.token ===callToken && positions?.[callToken].orderType === "buy";
-              const isCallSell =positions?.[callToken]?.token ===callToken && positions?.[callToken].orderType === "sell";
-              const isPutBuy = positions?.[putToken]?.token ===putToken && positions?.[putToken].orderType === "buy";
-              const isPutSell =positions?.[putToken]?.token ===putToken && positions?.[putToken].orderType === "sell";
+              const isCallBuy = positions?.[callToken] && positions?.[callToken].orderType === "buy";
+              const isCallSell =positions?.[callToken] && positions?.[callToken].orderType === "sell";
+              const isPutBuy = positions?.[putToken] && positions?.[putToken].orderType === "buy";
+              const isPutSell =positions?.[putToken] && positions?.[putToken].orderType === "sell";
 
             return (
               <React.Fragment key={index}>
@@ -125,8 +125,8 @@ const ContractTable: React.FC<ContractTableProps> = ({
                         handleOrderExcecution(
                           "buy",
                           "call",
-                          row.call?.token || "",
-                          {exchange: row.exchange},
+                          callToken || "",
+                          {...row}
                         )
                       }
                     >
@@ -142,8 +142,8 @@ const ContractTable: React.FC<ContractTableProps> = ({
                         handleOrderExcecution(
                           "sell",
                           "call",
-                          row.call?.token || "",
-                          {exchange: row.exchange},
+                          callToken || "",
+                          {...row}
                         )
                       }
                     >
@@ -161,8 +161,8 @@ const ContractTable: React.FC<ContractTableProps> = ({
                         handleOrderExcecution(
                           "buy",
                           "put",
-                          row.put?.token || "",
-                          {exchange: row.exchange},
+                          putToken || "",
+                          {...row},
                         )
                       }
                     >
@@ -177,8 +177,8 @@ const ContractTable: React.FC<ContractTableProps> = ({
                         handleOrderExcecution(
                           "sell",
                           "put",
-                          row.put?.token || "",
-                          {exchange: row.exchange},
+                          putToken || "",
+                          {...row}
                         )
                       }
                     >
