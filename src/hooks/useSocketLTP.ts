@@ -62,6 +62,25 @@ const useSocketLTP = (
     setIsLoading(false);
   };
 
+  const handleChangeConnection = () => {
+    console.log("WebSocket connection opened");
+    setIsLoading(true);
+    const subscriptionMessage = {
+      msg: {
+        type: "subscribe",
+        datatypes: ["ltp"],
+        underlyings: [
+          {
+            underlying: bank,
+            cash: true,
+            options: [expiry],
+          },
+        ],
+      },
+    };
+    socketRef.current?.send(JSON.stringify(subscriptionMessage));
+  };
+
   useEffect(() => {
     if (!data || !expiry || !bank) return;
 
@@ -69,24 +88,7 @@ const useSocketLTP = (
       const ws = new WebSocket("wss://prices.algotest.xyz/mock/updates");
       socketRef.current = ws;
 
-      ws.onopen = () => {
-        console.log("WebSocket connection opened");
-        setIsLoading(true);
-        const subscriptionMessage = {
-          msg: {
-            type: "subscribe",
-            datatypes: ["ltp"],
-            underlyings: [
-              {
-                underlying: bank,
-                cash: true,
-                options: [expiry],
-              },
-            ],
-          },
-        };
-        ws.send(JSON.stringify(subscriptionMessage));
-      };
+      ws.onopen = handleChangeConnection;
 
       ws.onmessage = (event) => {
         const responseData: ResponseType = JSON.parse(event.data);
@@ -108,16 +110,22 @@ const useSocketLTP = (
       socketRef.current.close();
     }
 
+    if(!socketRef.current)
     initWebSocket();
 
     return () => {
       if (socketRef.current) {
         socketRef.current.close();
-        socketRef.current = null;
       }
     };
     /* eslint-enable react-hooks/exhaustive-deps */
-  }, [data, expiry, bank, ...deps]);
+  }, [data, ...deps]);
+
+  useEffect(()=>{
+    if (socketRef.current?.readyState === WebSocket.OPEN){
+      handleChangeConnection()
+    }
+  }, [expiry])
 
   return { liveData, isLoading };
 };
