@@ -2,12 +2,15 @@ import { StrikeData } from "@/hooks/useCombinedOptions";
 import roundToTwoDecimals from "@/utils/roundToTwoDecimals";
 import React, { ComponentProps, useEffect, useRef } from "react";
 import { twMerge } from "tailwind-merge";
+import { PositionsType } from "../Contracts/Contracts";
 
 interface ContractTableProps {
   loading: boolean;
   data: StrikeData[];
   synthetic_fut?: number;
   selectedExpiry: string;
+  setPositions: Function;
+  positions: { [token: string]: PositionsType };
 }
 
 const Cell: React.FC<ComponentProps<"div">> = ({ className, ...props }) => (
@@ -24,6 +27,8 @@ const ContractTable: React.FC<ContractTableProps> = ({
   loading,
   data,
   synthetic_fut = NaN,
+  setPositions,
+  positions,
 }) => {
   const syntheticFutRef = useRef<HTMLDivElement | null>(null);
 
@@ -32,7 +37,10 @@ const ContractTable: React.FC<ContractTableProps> = ({
 
     const timeoutId = setTimeout(() => {
       if (syntheticFutRef.current) {
-        syntheticFutRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
+        syntheticFutRef.current.scrollIntoView({
+          behavior: "smooth",
+          block: "center",
+        });
       }
     }, 200);
 
@@ -41,11 +49,34 @@ const ContractTable: React.FC<ContractTableProps> = ({
     };
   }, [synthetic_fut, loading]);
 
+  const handleOrderExcecution = (
+    orderType: string,
+    instrumentType: string,
+    token: string,
+    i: number,
+  ) => {
+    setPositions((p: { [token: string]: PositionsType }) => {
+      const newPositions = { ...p };
+    
+      if (!newPositions[token]) {
+        newPositions[token] = { orderType, instrumentType, token, row: data[i] };
+      } else if (newPositions[token].orderType === orderType) {
+        delete newPositions[token];
+      } else {
+        newPositions[token] = { orderType, instrumentType, token, row: data[i] };
+      }
+      return newPositions;
+    });
+    
+  };
+
   return (
     <div className="overflow-overlay bg-white overflow-x-hidden h-[70vh] w-full">
       <div className="bg-lightGray sticky top-0 z-10 flex h-[34px] border-b border-gray">
         <Cell>Call Price</Cell>
+        <Cell>Lots</Cell>
         <Cell>Strike Price</Cell>
+        <Cell>Lots</Cell>
         <Cell>Put Price</Cell>
       </div>
       {loading ? (
@@ -59,6 +90,14 @@ const ContractTable: React.FC<ContractTableProps> = ({
             const showSyntheticFut =
               isCallHighlighted &&
               (!data[index + 1] || data[index + 1].strike >= synthetic_fut);
+
+              const callToken = row?.call?.token||'';
+              const putToken = row?.put?.token||'';
+
+              const isCallBuy = positions?.[callToken]?.token ===callToken && positions?.[callToken].orderType === "buy";
+              const isCallSell =positions?.[callToken]?.token ===callToken && positions?.[callToken].orderType === "sell";
+              const isPutBuy = positions?.[putToken]?.token ===putToken && positions?.[putToken].orderType === "buy";
+              const isPutSell =positions?.[putToken]?.token ===putToken && positions?.[putToken].orderType === "sell";
 
             return (
               <React.Fragment key={index}>
@@ -75,7 +114,77 @@ const ContractTable: React.FC<ContractTableProps> = ({
                   >
                     {roundToTwoDecimals(row.call?.value || 0)}
                   </Cell>
+                  <Cell className="flex gap-2 items-center justify-center">
+                    <button
+                      className={twMerge(
+                        "size-6 rounded-md border border-gray",
+                        isCallBuy&&
+                          "bg-green-700"
+                      )}
+                      onClick={() =>
+                        handleOrderExcecution(
+                          "buy",
+                          "call",
+                          row.call?.token || "",
+                          index,
+                        )
+                      }
+                    >
+                      B
+                    </button>
+                    <button
+                      className={twMerge(
+                        "size-6 rounded-md border border-gray",
+                        isCallSell &&
+                        "bg-red-700"
+                      )}
+                      onClick={() =>
+                        handleOrderExcecution(
+                          "sell",
+                          "call",
+                          row.call?.token || "",
+                          index,
+                        )
+                      }
+                    >
+                      S
+                    </button>
+                  </Cell>
                   <Cell>{row.strike}</Cell>
+                  <Cell className="flex gap-2 items-center justify-center">
+                    <button
+                      className={twMerge(
+                        "size-6 rounded-md border border-gray",
+                        isPutBuy &&"bg-green-800"
+                      )}
+                      onClick={() =>
+                        handleOrderExcecution(
+                          "buy",
+                          "put",
+                          row.put?.token || "",
+                          index,
+                        )
+                      }
+                    >
+                      B
+                    </button>
+                    <button
+                      className={twMerge(
+                        "size-6 rounded-md border border-gray",
+                        isPutSell && "bg-red-800"
+                      )}
+                      onClick={() =>
+                        handleOrderExcecution(
+                          "sell",
+                          "put",
+                          row.put?.token || "",
+                          index,
+                        )
+                      }
+                    >
+                      S
+                    </button>
+                  </Cell>
                   <Cell className={isPutHighlighted ? "bg-yellow" : ""}>
                     {roundToTwoDecimals(row.put?.value || 0)}
                   </Cell>

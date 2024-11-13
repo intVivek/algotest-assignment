@@ -1,15 +1,25 @@
 import { useMemo, useState } from "react";
 import ContractTable from "../ContractTable/ContractTable";
 import ExpiryFilter from "../ExpiryFilter/ExpiryFilter";
-import useCombinedOptions from "@/hooks/useCombinedOptions";
+import useCombinedOptions, { StrikeData } from "@/hooks/useCombinedOptions";
 import useSocketLTP from "@/hooks/useSocketLTP";
 
 const bank = "BANKNIFTY";
 
+export type PositionsType = {
+  orderType: string;
+  instrumentType: string;
+  token?: string;
+  row?: StrikeData;
+};
+
 export default function Contracts() {
   const [selectedExpiry, setSelectedExpiry] = useState("");
+  const [positions, setPositions] = useState<{[token: string]: PositionsType}>({});
 
-  const { data, implied_futures, isLoading } = useCombinedOptions(bank);
+  const { data, implied_futures, isLoading } = useCombinedOptions(
+    bank,
+  );
 
   const { liveData, isLoading: isLiveDataLoading } = useSocketLTP(
     data,
@@ -27,6 +37,7 @@ export default function Contracts() {
   }, [data]);
 
   return (
+    <>
     <div className="w-[95vw] max-w-[700px] rounded-md bg-lightGray border border-gray">
       <ExpiryFilter
         expiryDates={expiryDates}
@@ -40,8 +51,14 @@ export default function Contracts() {
           loading={isLoading || isLiveDataLoading}
           data={liveData}
           synthetic_fut={implied_futures?.[selectedExpiry]}
+          setPositions={setPositions}
+          positions={positions}
         />
       </div>
     </div>
+    {Object.values(positions).map((position, i)=>{
+      return <div key={i}>{JSON.stringify(position)}</div>}
+      )}
+    </>
   );
 }
