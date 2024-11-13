@@ -1,11 +1,11 @@
-import { CombinedOptions } from "@/hooks/useCombinedOptions";
+import { StrikeData } from "@/hooks/useCombinedOptions";
 import roundToTwoDecimals from "@/utils/roundToTwoDecimals";
 import React, { ComponentProps, useEffect, useRef } from "react";
 import { twMerge } from "tailwind-merge";
 
 interface ContractTableProps {
   loading: boolean;
-  data: CombinedOptions[];
+  data: StrikeData[];
   synthetic_fut?: number;
   selectedExpiry: string;
 }
@@ -34,7 +34,7 @@ const ContractTable: React.FC<ContractTableProps> = ({
       if (syntheticFutRef.current) {
         syntheticFutRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
       }
-    }, 200); 
+    }, 200);
 
     return () => {
       clearTimeout(timeoutId);
@@ -73,11 +73,11 @@ const ContractTable: React.FC<ContractTableProps> = ({
                       isCallHighlighted && !showSyntheticFut ? "bg-yellow" : ""
                     }
                   >
-                    {roundToTwoDecimals(row.call)}
+                    {roundToTwoDecimals(row.call?.value || 0)}
                   </Cell>
                   <Cell>{row.strike}</Cell>
                   <Cell className={isPutHighlighted ? "bg-yellow" : ""}>
-                    {roundToTwoDecimals(row.put)}
+                    {roundToTwoDecimals(row.put?.value || 0)}
                   </Cell>
                 </div>
 

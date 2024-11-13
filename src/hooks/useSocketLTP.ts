@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { CombinedOptions } from "./useCombinedOptions";
+import {  StrikeData } from "./useCombinedOptions";
 
 type LTPData = {
   ba_price: number;
@@ -16,7 +16,7 @@ type ResponseType = {
   ltp: LTPData[];
 };
 
-type Data = { [expiry: string]: CombinedOptions[] };
+type Data = { [expiry: string]: StrikeData[] };
 
 const useSocketLTP = (
   data: Data,
@@ -25,24 +25,41 @@ const useSocketLTP = (
   deps: unknown[] = []
 ) => {
   const socketRef = useRef<WebSocket | null>(null);
-  const [liveData, setLiveData] = useState<CombinedOptions[]>([]);
+  const [liveData, setLiveData] = useState<StrikeData[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const handleIncomingData = (ltpData: LTPData[]) => {
     if (!data[expiry] || !ltpData) return;
-    const updatedData = data[expiry].map((option) => {
-      const matchingLtp = ltpData.find((ltp) => ltp.token === option.token);
-      if (matchingLtp) {
-        return {
-          ...option,
-          call: option.call !== null ? matchingLtp.ltp : option.call,
-          put: option.put !== null ? matchingLtp.ltp : option.put,
-        };
+    // const updatedData = data[expiry].map((option) => {
+    //   const matchingLtp = ltpData.find((ltp) =>
+    //     option.option_type === "CE"
+    //       ? ltp.token === option.call_token
+    //       : ltp.token === option.put_token
+    //   );
+    //   if (matchingLtp) {
+    //     return {
+    //       ...option,
+    //       call: option.call !== null ? matchingLtp.ltp : option.call,
+    //       put: option.put !== null ? matchingLtp.ltp : option.put,
+    //     };
+    //   }
+    //   return option;
+    // });
+
+    ltpData.forEach((ltp, i) => {
+      const dataToUpdate = data[expiry].find(item => item.call?.token === ltp.token || item.put?.token === ltp.token);
+      if (dataToUpdate) {
+        if (dataToUpdate.call?.token === ltp.token) {
+          dataToUpdate.call.value = ltp.ltp; 
+        } else if (dataToUpdate.put?.token === ltp.token) {
+          dataToUpdate.put.value = ltp.ltp; 
+        }
       }
-      return option;
+    
+      return dataToUpdate; 
     });
-    setLiveData(updatedData);
-    setIsLoading(false); // Stop loading as soon as data is set
+    setLiveData([...data[expiry]]);
+    setIsLoading(false);
   };
 
   useEffect(() => {

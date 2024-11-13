@@ -15,8 +15,8 @@ export interface Options {
 
 export interface OptionData {
   strike: number[];
-  call_close: (null | number)[];
-  put_close: (null | number)[];
+  call_close: (undefined | number)[];
+  put_close: (undefined | number)[];
 }
 
 const fetchOptionChain = async (): Promise<OptionChainResponse> => {
